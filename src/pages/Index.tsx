@@ -4,6 +4,12 @@ import { OperationControls } from "@/components/OperationControls";
 import { OperationSteps } from "@/components/OperationSteps";
 import { toast } from "sonner";
 import { AnimatePresence } from "framer-motion";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Info } from "lucide-react";
 
 const Index = () => {
   const [array, setArray] = useState<number[]>([1, 5, 3, 8, 4]);
@@ -16,37 +22,39 @@ const Index = () => {
 
   const operationSteps = {
     insert: [
-      "Find the position",
-      "Shift items",
-      "Insert the item"
+      "First, we find where to insert the new item",
+      "Then, we make space by shifting items to the right",
+      "Finally, we insert the new item at the chosen position"
     ],
     delete: [
-      "Find the position",
-      "Remove the item",
-      "Shift items"
+      "First, we find which item to delete",
+      "Then, we remove that item",
+      "Finally, we shift remaining items to fill the gap"
     ],
     traverse: [
-      "Start from the beginning",
-      "Move to the next",
-      "Do something with each item"
+      "We start at the beginning of the array",
+      "We visit each item one by one",
+      "We can perform an action on each item we visit"
     ],
     search: [
-      "Start from the beginning",
-      "Compare each item",
-      "Stop when you find it"
+      "We start looking from the beginning",
+      "We check each item one by one",
+      "We stop when we find what we're looking for"
     ],
     update: [
-      "Find the position",
-      "Replace the value",
-      "Finish"
+      "First, we find which item to update",
+      "Then, we replace it with the new value",
+      "The update is now complete!"
     ],
     sort: [
-      "Start from two items",
-      "Compare those two",
-      "Swap if needed",
-      "Repeat for all"
+      "We look at two items side by side",
+      "We compare them to see which is bigger",
+      "We swap them if they're in the wrong order",
+      "We repeat until everything is in order"
     ]
   };
+
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleOperation = async (operation: string) => {
     setCurrentOperation(operation);
@@ -75,13 +83,12 @@ const Index = () => {
     }
   };
 
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   const insertAnimation = async () => {
     const newValue = Math.floor(Math.random() * 10);
     const position = Math.floor(Math.random() * (array.length + 1));
     
     setTargetIndex(position);
+    toast.info(`Inserting ${newValue} at position ${position}`);
     await sleep(speed);
     setCurrentStep(1);
     
@@ -99,6 +106,7 @@ const Index = () => {
     const position = Math.floor(Math.random() * array.length);
     
     setTargetIndex(position);
+    toast.info(`Deleting item at position ${position}`);
     await sleep(speed);
     setCurrentStep(1);
     
@@ -113,6 +121,7 @@ const Index = () => {
   };
 
   const traverseAnimation = async () => {
+    toast.info("Starting array traversal");
     for (let i = 0; i < array.length; i++) {
       setHighlightedIndex(i);
       await sleep(speed / 2);
@@ -145,6 +154,7 @@ const Index = () => {
     const newValue = Math.floor(Math.random() * 10);
     
     setTargetIndex(position);
+    toast.info(`Updating position ${position} to ${newValue}`);
     await sleep(speed);
     setCurrentStep(1);
     
@@ -194,9 +204,32 @@ const Index = () => {
   return (
     <div className="min-h-screen p-8 space-y-8">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-4xl font-bold text-center animate-fade-in">
-          Array Operations Visualizer
-        </h1>
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold animate-fade-in">
+            Array Operations Visualizer
+          </h1>
+          <p className="text-muted-foreground">
+            Learn how array operations work through interactive visualizations
+          </p>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <button className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground">
+                <Info size={16} /> How to use
+              </button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+              <div className="space-y-2">
+                <h4 className="font-medium">Getting Started</h4>
+                <p className="text-sm text-muted-foreground">
+                  1. Choose an operation from the buttons below
+                  2. Watch the visualization step by step
+                  3. Adjust the speed using the slider
+                  4. Reset anytime to start over
+                </p>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
         
         <div className="flex justify-center py-16">
           <div className="flex gap-4">
